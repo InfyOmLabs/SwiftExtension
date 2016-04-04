@@ -1,0 +1,6 @@
+framework module Pods_SwiftExtension_Tests {
+  umbrella header "Pods-SwiftExtension_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
