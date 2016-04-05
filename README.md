@@ -178,7 +178,11 @@ let jsonString
 print(jsonString.toDictionary)  //  Convert String to NSDicationry
 print(jsonString.toNSData())    //  Convert String to NSdate
 ```
-
+Check string contain Regex (Regular expresion)
+``` swift
+let imageUrl = http://www.testing.com/uploads/images/__w-200-400-600-800-1000__/9fbaa5bc4e032fb528f3f41997f660e7.jpg
+print(imageUrl.matchesForRegexInText("__w-((?:-?\\d+)+)__")) // Get only image size string array ["__w-200-400-600-800-1000__"]
+```
 Path Component and Extensions
 ``` swift
 let pathString = "file.png" //  
