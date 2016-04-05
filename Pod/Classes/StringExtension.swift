@@ -13,7 +13,7 @@ extension String {
     
     //  Trim String with white spaces
     public func trim() -> String {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        return stringByReplacingOccurrencesOfString(" ", withString: "")
     }
     
     //  Trim String with new line character

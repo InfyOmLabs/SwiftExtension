@@ -154,31 +154,31 @@ extension NSDate {
     }
     
     //  Get days difference between dates
-    public func daysInBetweenDate(date: NSDate) -> Double {
+    public func daysInBetweenDate(date: NSDate) -> Int {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/86400)
-        return difference
+        return Int(difference)
     }
     
     //  Get hours difference between dates
-    public func hoursInBetweenDate(date: NSDate) -> Double {
+    public func hoursInBetweenDate(date: NSDate) -> Int {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/3600)
-        return difference
+        return Int(difference)
     }
     
     //  Get minutes difference between dates
-    public func minutesInBetweenDate(date: NSDate) -> Double {
+    public func minutesInBetweenDate(date: NSDate) -> Int {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/60)
-        return difference
+        return Int(difference)
     }
     
     //  Get seconds difference between dates
-    public func secondsInBetweenDate(date: NSDate) -> Double {
+    public func secondsInBetweenDate(date: NSDate) -> Int {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference)
-        return difference
+        return Int(difference)
     }
     
     //  Get time difference between dates
@@ -219,10 +219,15 @@ extension NSDate {
         if hour >= 1 {
             finalString += "\(hour)h : "
         }
-        let remainAfterHour =  remainAfterDay % 3600
+        let remainAfterHour = remainAfterDay % 3600
         let minute = remainAfterHour / 60
         if minute >= 1 {
             finalString += "\(minute)m : "
+        }
+        let remainAfterMinute = remainAfterHour % 60
+        let second = remainAfterMinute / 60
+        if second >= 1 {
+            finalString += "\(second)s "
         }
         
         return finalString
