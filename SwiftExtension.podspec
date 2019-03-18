@@ -2,7 +2,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SwiftExtension"
-  s.version          = "0.1.2"
+  s.version          = "0.1.3"
   s.summary          = "Extensions for regular using classes"
   s.description      = "Extensions for regular using classes which are mostly used in iOS app"
 s.swift_version = "4.0"
