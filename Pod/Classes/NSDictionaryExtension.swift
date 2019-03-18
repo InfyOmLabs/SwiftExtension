@@ -14,7 +14,7 @@ extension NSDictionary {
     //  Convert NSDictionary to NSData
     public var toNSData : NSData! {
         do {
-            return try NSJSONSerialization.dataWithJSONObject(self, options: .PrettyPrinted)          // success ...
+            return try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted) as NSData          // success ...
         } catch {
             // failure
             print("Fetch failed: \((error as NSError).localizedDescription)")
@@ -24,7 +24,7 @@ extension NSDictionary {
     
     //  Check key is exist in NSDictionary or not
     public func has(key: Key) -> Bool {
-        return objectForKey(key) != nil
+        return object(forKey: key) != nil
     }
 
 }

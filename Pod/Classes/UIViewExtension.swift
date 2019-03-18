@@ -50,12 +50,12 @@ extension UIView {
     
     //  Set view width
     public func setWidth(width : CGFloat) {
-        self.frame.size = CGSizeMake(width, self.getHeight)
+        self.frame.size = CGSize(width: width, height: self.getHeight)
     }
     
     //  Set view height
     public func setHeight( height : CGFloat) {
-        self.frame.size = CGSizeMake(self.getWidth, height)
+        self.frame.size = CGSize(width: self.getWidth, height: height)
     }
     
     //  Set Center
@@ -92,9 +92,9 @@ extension UIView {
     public var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
-            parentResponder = parentResponder!.nextResponder()
-            if parentResponder is UIViewController {
-                return parentResponder as! UIViewController!
+            parentResponder = parentResponder!.next
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
             }
         }
         return nil
@@ -104,8 +104,8 @@ extension UIView {
     public func applyPlainShadow() {
         let layer = self.layer
         
-        layer.shadowColor = UIColor.blackColor().CGColor
-        layer.shadowOffset = CGSizeMake(0, 3)
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 3)
         layer.shadowOpacity = 0.5
         layer.shadowRadius = 1.0
     }
@@ -113,7 +113,7 @@ extension UIView {
     //  Apply boarder to view
     public func applyBorder() {
         self.layer.borderWidth = 1.0
-        self.layer.borderColor = UIColor.grayColor().CGColor
+        self.layer.borderColor = UIColor.gray.cgColor
     }
     
     //  Apply corner radius
@@ -125,38 +125,38 @@ extension UIView {
     //  Add only bottom border
     public func applyBottomBorder() {
         self.layer.borderWidth = 1.0
-        self.layer.borderColor = UIColor.grayColor().CGColor
+        self.layer.borderColor = UIColor.gray.cgColor
     }
     
     //  Add Top Border
     public func addTopBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
-        border.backgroundColor = color.CGColor
-        border.frame = CGRectMake(0, 0, self.getWidth, width)
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: 0, width: self.getWidth, height: width)
         self.layer.addSublayer(border)
     }
     
     //  Add Right Border
     public func addRightBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
-        border.backgroundColor = color.CGColor
-        border.frame = CGRectMake(self.getWidth - width, 0, width, self.getHeight)
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: self.getWidth - width, y: 0, width: width, height: self.getHeight)
         self.layer.addSublayer(border)
     }
     
     //  Add Bottom Border
     public func addBottomBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
-        border.backgroundColor = color.CGColor
-        border.frame = CGRectMake(0, self.getHeight - width, self.getWidth, width)
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: self.getHeight - width, width: self.getWidth, height: width)
         self.layer.addSublayer(border)
     }
     
     //  Add Left Border
     public func addLeftBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
-        border.backgroundColor = color.CGColor
-        border.frame = CGRectMake(0, 0, width, self.getHeight)
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: 0, width: width, height: self.getHeight)
         self.layer.addSublayer(border)
     }
 }

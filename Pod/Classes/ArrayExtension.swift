@@ -11,7 +11,7 @@ extension Array {
     public var toCommaString: String! {
         let stringArray = self as? NSArray
         if let stringArray = stringArray {
-            return stringArray.componentsJoinedByString(",")
+            return stringArray.componentsJoined(by: ",")
         }
         return ""
     }
@@ -19,7 +19,7 @@ extension Array {
     // Remove Specific object from Array
    public  mutating func removeObject<U: Equatable>(object: U) {
         var index: Int?
-        for (idx, objectToCompare) in self.enumerate() {
+    for (idx, objectToCompare) in self.enumerated() {
             if let to = objectToCompare as? U {
                 if object == to {
                     index = idx
@@ -28,7 +28,7 @@ extension Array {
         }
 
         if(index != nil) {
-            self.removeAtIndex(index!)
+            self.remove(at: index!)
         }
     }
 

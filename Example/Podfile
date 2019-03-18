@@ -1,11 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-target 'SwiftExtension_Example', :exclusive => true do
+target 'SwiftExtension_Example' do
   pod 'SwiftExtension', :path => '../'
 end
 
-target 'SwiftExtension_Tests', :exclusive => true do
+target 'SwiftExtension_Tests' do
   pod 'SwiftExtension', :path => '../'
 
   

@@ -13,72 +13,70 @@ extension String {
     
     //  Trim String with white spaces
     public func trim() -> String {
-        return stringByReplacingOccurrencesOfString(" ", withString: "")
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
     //  Trim String with new line character
     public func trimForNewLineCharacterSet() -> String {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.newlines)
     }
     
     //  Trim String for phone number string
     public func trimPhoneNumberString() -> String {
-        return stringByReplacingOccurrencesOfString(
-            "\\D", withString: "", options: .RegularExpressionSearch,
-            range: self.startIndex..<self.endIndex)
+        return self.replacingOccurrences(of: "\\D", with: "", options: .regularExpression, range: self.startIndex..<self.endIndex)
     }
     
     // String length
     public var length: Int {
-        return self.characters.count
+        return self.count
     }
     
     //  NSDate from String
-    public func getDate() -> NSDate {
-        let dateFormate = NSDateFormatter()
+    public func getDate() -> Date {
+        let dateFormate = DateFormatter()
         dateFormate.dateFormat = "yyyy-MM-dd"
-        return dateFormate.dateFromString(self)!
+        return dateFormate.date(from: self)!
     }
     
     //  NSDate with time from String
-    public func getDateAndTime() -> NSDate {
-        let dateFormate = NSDateFormatter()
+    public func getDateAndTime() -> Date {
+        let dateFormate = DateFormatter()
         dateFormate.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return dateFormate.dateFromString(self)!
+        return dateFormate.date(from: self)!
     }
     
     //  Make array from string with comma (,)
-    public var makeArray : NSArray! {
-        return self.componentsSeparatedByString(",")
+    public var makeArray : Array<Any> {
+        return self.components(separatedBy: ",")
     }
     
     //  Make array from string with white space ( )
-    public var makeArrayByWhiteSpace : NSArray! {
-        return self.componentsSeparatedByString(" ")
+    public var makeArrayByWhiteSpace : Array<Any> {
+        return self.components(separatedBy: " ")
     }
     
     //  Get nth character
     public subscript(integerIndex: Int) -> Character {
-        let index = startIndex.advancedBy(integerIndex)
-        return self[index]
+        return self[index(startIndex, offsetBy: integerIndex)]
     }
     
     //  Get sub string with range
     public subscript(integerRange: Range<Int>) -> String {
-        let start = startIndex.advancedBy(integerRange.startIndex)
-        let end = startIndex.advancedBy(integerRange.endIndex)
+        let start = index(startIndex, offsetBy: integerRange.startIndex)
+        let end = index(startIndex, offsetBy: integerRange.endIndex) 
         let range = start..<end
-        return self[range]
+        return String(self[range])
     }
     
     //  Convert String to NSDictionary
-    public var toDictionary : NSDictionary! {
-        let data = dataUsingEncoding(NSUTF8StringEncoding)
-        do {
-            return try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary            // success ...
-        } catch {
-            // failure
-            print("Fetch failed: \((error as NSError).localizedDescription)")
+    public var toDictionary : [String: Any]? {
+        if let data = self.data(using: String.Encoding.utf8) {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
+                return json
+            } catch {
+                print("Something went wrong")
+            }
         }
         return nil
     }
@@ -92,17 +90,17 @@ extension String {
      */
     public func stringSizeWith(font: UIFont,width:CGFloat, lineSpecing : CGFloat)->CGRect
     {
-        let size = CGSizeMake(width,CGFloat.max)
+        let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
         let paragraphStyle = NSMutableParagraphStyle()
         if lineSpecing > 0 {
             paragraphStyle.lineSpacing = lineSpecing
         }
-        paragraphStyle.lineBreakMode = .ByWordWrapping;
-        let  attributes = [NSFontAttributeName:font,
-                           NSParagraphStyleAttributeName:paragraphStyle.copy()]
+        paragraphStyle.lineBreakMode = .byWordWrapping;
+        let  attributes = [NSAttributedString.Key.font:font,
+                           NSAttributedString.Key.paragraphStyle:paragraphStyle.copy()]
         
         let text = self as NSString
-        let rect = text.boundingRectWithSize(size, options: .UsesLineFragmentOrigin, attributes: attributes, context:nil)
+        let rect = text.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context:nil)
         return rect
     }
     
@@ -112,9 +110,9 @@ extension String {
      :returns: Width of this string using given font
      */
     public func stringWidth(font: UIFont) -> CGFloat {
-        let  attributes = [NSFontAttributeName:font]
+        let  attributes = [NSAttributedString.Key.font:font]
         let text = self as NSString
-        let size = text.sizeWithAttributes(attributes)
+        let size = text.size(withAttributes: attributes)
         return size.width
     }
     
@@ -124,9 +122,12 @@ extension String {
      :returns: String with removed characters
      */
     public func removeCharsFromEnd(count_:Int) -> String {
-        let stringLength = self.characters.count
+        let start = index(startIndex, offsetBy: 0)
+        let stringLength = self.count
         let substringIndex = (stringLength < count_) ? 0 : stringLength - count_
-        return self.substringToIndex(self.startIndex.advancedBy(substringIndex))
+        let end = index(startIndex, offsetBy: substringIndex)
+        let range = start..<end
+        return String(self[range])
     }
     
     //  Matches Regex in String
@@ -135,9 +136,9 @@ extension String {
         do {
             let regex = try NSRegularExpression(pattern: regex, options: [])
             let nsString = self as NSString
-            let results = regex.matchesInString(self,
-                                                options: [], range: NSMakeRange(0, nsString.length))
-            return results.map { nsString.substringWithRange($0.range)}
+            let results = regex.matches(in: self,
+                                        options: [], range: NSMakeRange(0, nsString.length))
+            return results.map { nsString.substring(with: $0.range)}
         } catch let error as NSError {
             print("invalid regex: \(error.localizedDescription)")
             return []
@@ -148,9 +149,9 @@ extension String {
     public func getYoutubeID() -> String {
         let pattern: String = "(?<=v(=|/))([-a-zA-Z0-9_]+)|(?<=youtu.be/)([-a-zA-Z0-9_]+)"
         do {
-            let regex = try NSRegularExpression(pattern: pattern, options: .CaseInsensitive)
-            if let regexMatch = regex.firstMatchInString(self, options: NSMatchingOptions.ReportProgress, range: NSRange(location: 0, length: self.utf16.count)) {
-                return (self as NSString).substringWithRange(regexMatch.range)
+            let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+            if let regexMatch = regex.firstMatch(in: self, options: NSRegularExpression.MatchingOptions.reportProgress, range: NSRange(location: 0, length: self.utf16.count)) {
+                return (self as NSString).substring(with: regexMatch.range)
             }
         } catch {
             // failure
@@ -161,7 +162,7 @@ extension String {
     
     //  Convert String to Double Value
     public func toDouble() -> Double? {
-        if let myNumber = NSNumberFormatter().numberFromString(self) {
+        if let myNumber = NumberFormatter().number(from: self) {
             return myNumber.doubleValue
         } else {
             return nil
@@ -170,17 +171,17 @@ extension String {
     
     //  Convert String to Float Value
     public func toFloat() -> Float? {
-        if let myNumber = NSNumberFormatter().numberFromString(self) {
+        if let myNumber = NumberFormatter().number(from: self) {
             return myNumber.floatValue
         } else {
             return nil
         }
     }
     
-   //   Convert String to UInt Value
+    //   Convert String to UInt Value
     public func toUInt() -> UInt? {
-        if let myNumber = NSNumberFormatter().numberFromString(self) {
-            return myNumber.unsignedIntegerValue
+        if let myNumber = NumberFormatter().number(from: self) {
+            return myNumber.uintValue
         } else {
             return nil
         }
@@ -188,58 +189,42 @@ extension String {
     
     //  Convert String to Bool Value
     public func toBool() -> Bool? {
-        if let myNumber = NSNumberFormatter().numberFromString(self) {
+        if let myNumber = NumberFormatter().number(from: self) {
             return myNumber.boolValue
         } else {
             return nil
         }
     }
-
+    
     //  Check for email validation
     public var isEmail: Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluateWithObject(self)
+        return emailTest.evaluate(with: self)
     }
-
+    
     //  Check for URL validation
     public var isValideUrl : Bool {
         let urlRegEx = "((?:http|https)://)?(?:www\\.)?[\\w\\d\\-_]+\\.\\w{2,3}(\\.\\w{2})?(/(?<=/)(?:[\\w\\d\\-./_]+)?)?"
         let predicate = NSPredicate(format:"SELF MATCHES %@", argumentArray:[urlRegEx])
-        return predicate.evaluateWithObject(self)
+        return predicate.evaluate(with: self)
     }
-
+    
     //  Convert to NSData
-    public func toNSData() -> NSData {
-        return self.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+    public func toNSData() -> Data {
+        return self.data(using: String.Encoding.utf8, allowLossyConversion: true)!
     }
-
+    
     //  Check for Substring with case sensitive
     public func contains(other: String) -> Bool{
-        var start = startIndex
-        repeat{
-            let range = start++ ..< endIndex
-            let subString = self[range]
-            if subString.hasPrefix(other){
-                return true
-            }
-        }while start != endIndex
-        return false
+        return self.contains(other)
     }
-
+    
     //  Check for Substring with ignoring case sensitive
     public func containsIgnoreCase(other: String) -> Bool{
-        var start = startIndex
-        repeat{
-            let range = start++ ..< endIndex
-            let subString = self[range].lowercaseString
-            if subString.hasPrefix(other.lowercaseString){
-                return true
-            }
-        }while start != endIndex
-        return false
+        return self.lowercased().contains(other.lowercased())
     }
-
+    
     //  Get last path component
     public var lastPathComponent: String {
         get {
@@ -257,14 +242,14 @@ extension String {
     //  Delete last path component
     public var stringByDeletingLastPathComponent: String {
         get {
-            return (self as NSString).stringByDeletingLastPathComponent
+            return (self as NSString).deletingLastPathComponent
         }
     }
-
+    
     //  Delete path extension
     public var stringByDeletingPathExtension: String {
         get {
-            return (self as NSString).stringByDeletingPathExtension
+            return (self as NSString).deletingPathExtension
         }
     }
     
@@ -278,13 +263,13 @@ extension String {
     //  Add path component
     public func stringByAppendingPathComponent(path: String) -> String {
         let mainString = self as NSString
-        return mainString.stringByAppendingPathComponent(path)
+        return mainString.appendingPathComponent(path)
     }
-
+    
     //  Add path extension
     public func stringByAppendingPathExtension(ext: String) -> String? {
         let mainString = self as NSString
-        return mainString.stringByAppendingPathExtension(ext)
+        return mainString.appendingPathExtension(ext)
     }
     
     /**
@@ -308,10 +293,10 @@ public extension NSAttributedString {
     //  Get string width
     public func stringSizeWith(width:CGFloat)->CGRect
     {
-        let size = CGSizeMake(width,CGFloat.max)
-        let options : NSStringDrawingOptions = [.UsesLineFragmentOrigin , .UsesFontLeading ]
+        let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+        let options : NSStringDrawingOptions = [.usesLineFragmentOrigin , .usesFontLeading ]
         let text = self as NSAttributedString
-        let rect = text.boundingRectWithSize(size, options: options , context:nil)
+        let rect = text.boundingRect(with: size, options: options , context:nil)
         return rect
     }
 }

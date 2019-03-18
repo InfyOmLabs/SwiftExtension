@@ -2,9 +2,10 @@
 
 Pod::Spec.new do |s|
   s.name             = "SwiftExtension"
-  s.version          = "0.1.1"
+  s.version          = "0.1.2"
   s.summary          = "Extensions for regular using classes"
-  s.description      = "Extensions for regular using classes"
+  s.description      = "Extensions for regular using classes which are mostly used in iOS app"
+s.swift_version = "4.0"
   s.homepage         = "https://github.com/InfyOmLabs/SwiftExtension"
   s.license          = 'MIT'
   s.author           = { "dhvl-golakiya" => "dhvl.golakiya@gmail.com" }
@@ -13,7 +14,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source_files = 'Pod/Classes/**/*'
   s.resource_bundles = {
-    'SwiftExtension' => ['Pod/Assets/*.png']
+
   }
   s.frameworks = 'UIKit'
 end

@@ -8,80 +8,80 @@
 
 import Foundation
 
-extension NSDate {
+extension Date {
     
     //  Get Week day from date
     public var weekDay:Int {
-        return NSCalendar.currentCalendar().component(.Weekday, fromDate: self)
+        return Calendar.current.component(.weekday, from: self)
     }
     
     //  Get Week index of month from date
     public var weekOfMonth : Int {
-        return NSCalendar.currentCalendar().component(.WeekOfMonth, fromDate: self)
+        return Calendar.current.component(.weekOfMonth, from: self)
     }
     
     //  Get Week day name from date
     public var weekDayName : String {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     
     //  Get Month name from date
     public var monthName : String {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "MMMM"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     //  Get Month index from date
     public var month: Int {
-        return NSCalendar.currentCalendar().component(.Month, fromDate: self)
+        return Calendar.current.component(.month, from: self)
     }
     
     //  Get Day index from date
     public var day: Int {
-        return NSCalendar.currentCalendar().component(.Day, fromDate: self)
+        return Calendar.current.component(.day, from: self)
     }
     
     //  Get Year index from date
     public var year: Int {
-        return NSCalendar.currentCalendar().component(.Year, fromDate: self)
+        return Calendar.current.component(.year, from: self)
     }
     
     //  Get Hour and Minute from date
     public func getHourAndMinute() -> (hour : Int, minute : Int) {
-        let calendar = NSCalendar.currentCalendar()
-        let comp = calendar.components([.Hour, .Minute], fromDate: self)
-        return (comp.hour, comp.minute)
+        let calendar = Calendar.current
+        let comp = calendar.dateComponents([.hour, .minute], from: self)
+        return (comp.hour!, comp.minute!)
     }
     
     //  Get Total count of weeks in month from date
     public func weeksInMonth() -> Int?
     {
-        let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+        var calendar = Calendar(identifier: .gregorian)
         calendar.firstWeekday = 2 // 2 == Monday
         
         // First monday in month:
-        let comps = NSDateComponents()
+        var comps = DateComponents()
         comps.month = self.month
         comps.year = self.year
         comps.weekday = calendar.firstWeekday
         comps.weekdayOrdinal = 1
-        guard let first = calendar.dateFromComponents(comps)  else {
+        guard let first = calendar.date(from: comps)  else {
             return nil
         }
         
         // Last monday in month:
         comps.weekdayOrdinal = -1
-        guard let last = calendar.dateFromComponents(comps)  else {
+        guard let last = calendar.date(from: comps)  else {
             return nil
         }
         
         // Difference in weeks:
-        let weeks = calendar.components(.WeekOfMonth, fromDate: first, toDate: last, options: [])
-        return weeks.weekOfMonth + 1
+        let weeks = calendar.dateComponents([.weekOfMonth], from: first, to: last)
+        return weeks.weekOfMonth! + 1
     }
     
     //  Get Total count of week days in month from date
@@ -89,96 +89,96 @@ extension NSDate {
     {
         guard 1...12 ~= month else { return nil }
         
-        let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-        let components = NSDateComponents()
+        let calendar = Calendar(identifier: .gregorian)
+        var components = DateComponents()
         components.weekday =  self.weekDay
         components.weekdayOrdinal = 1
         components.month = self.month
         components.year = self.year
         
-        if let date = calendar.dateFromComponents(components)  {
-            let firstDay = calendar.component(.Day, fromDate: date)
-            let days = calendar.rangeOfUnit(.Day, inUnit:.Month, forDate:date).length
-            return (days - firstDay) / 7 + 1
+        if let date = calendar.date(from: components)  {
+            let firstDay = calendar.component(.day, from: date)
+            let days = calendar.range(of: .day, in: .month, for: date)?.count
+            return (days! - firstDay) / 7 + 1
         }
         return nil
     }
     
     //  Get Total count of days in month from date
     public func daysInMonth() -> Int? {
-        let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-        return calendar.rangeOfUnit(.Day, inUnit: .Month, forDate: self).length
+        let calendar = Calendar(identifier: .gregorian)
+        return calendar.range(of: .day, in: .month, for: self)?.count
     }
     
     //  Get Time in AM / PM format
     public func getTime() -> String {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "hh:mm a"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     //  Get Time short (i.e 12 Mar) format
     public func getTimeInShortFormat() -> String{
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     //  Get Time short (i.e 12 Mar, 2016) format
     public func getTimeInFullFormat() -> String{
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM, yyyy"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     //  Get Time standard (i.e 2016-03-12) format
     public func formateBirthDate() -> String {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
     
     //  Check date is after date
-    public func afterDate(date : NSDate) -> Bool {
-        return self.compare(date) == NSComparisonResult.OrderedAscending
+    public func afterDate(date : Date) -> Bool {
+        return self.compare(date) == ComparisonResult.orderedAscending
     }
     
     //  Check date is before date
-    public func beforDate(date : NSDate) -> Bool {
-        return self.compare(date) == NSComparisonResult.OrderedDescending
+    public func beforDate(date : Date) -> Bool {
+        return self.compare(date) == ComparisonResult.orderedDescending
     }
     
     //  Check date is equal date
-    public func equalDate(date : NSDate) -> Bool {
-        return self.isEqualToDate(date)
+    public func equalDate(date : Date) -> Bool {
+        return self == date
     }
     
     //  Get days difference between dates
-    public func daysInBetweenDate(date: NSDate) -> Int {
+    public func daysInBetweenDate(date: NSDate) -> Double {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/86400)
-        return Int(difference)
+        return difference
     }
     
     //  Get hours difference between dates
-    public func hoursInBetweenDate(date: NSDate) -> Int {
+    public func hoursInBetweenDate(date: NSDate) -> Double {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/3600)
-        return Int(difference)
+        return difference
     }
     
     //  Get minutes difference between dates
-    public func minutesInBetweenDate(date: NSDate) -> Int {
+    public func minutesInBetweenDate(date: NSDate) -> Double {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference/60)
-        return Int(difference)
+        return difference
     }
     
     //  Get seconds difference between dates
-    public func secondsInBetweenDate(date: NSDate) -> Int {
+    public func secondsInBetweenDate(date: NSDate) -> Double {
         var difference = self.timeIntervalSinceNow - date.timeIntervalSinceNow
         difference = fabs(difference)
-        return Int(difference)
+        return difference
     }
     
     //  Get time difference between dates
@@ -219,15 +219,10 @@ extension NSDate {
         if hour >= 1 {
             finalString += "\(hour)h : "
         }
-        let remainAfterHour = remainAfterDay % 3600
+        let remainAfterHour =  remainAfterDay % 3600
         let minute = remainAfterHour / 60
         if minute >= 1 {
             finalString += "\(minute)m : "
-        }
-        let remainAfterMinute = remainAfterHour % 60
-        let second = remainAfterMinute / 60
-        if second >= 1 {
-            finalString += "\(second)s "
         }
         
         return finalString

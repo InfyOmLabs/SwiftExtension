@@ -33,7 +33,7 @@ extension Int {
 
     //  Get Digit
     public func digit() -> [Int] {
-        return description.characters.map{Int(String($0)) ?? 0}
+        return String(self).compactMap{ Int(String($0)) }
     }
 
     //  Get Digit count

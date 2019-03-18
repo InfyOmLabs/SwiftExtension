@@ -14,7 +14,7 @@ extension NSData {
     public var toDictionary : NSDictionary! {
         let JSONData = self
         do {
-            let JSON = try NSJSONSerialization.JSONObjectWithData(JSONData, options:NSJSONReadingOptions(rawValue: 0))
+            let JSON = try JSONSerialization.jsonObject(with: JSONData as Data, options:JSONSerialization.ReadingOptions(rawValue: 0))
             guard let dictioonary :NSDictionary = JSON as? NSDictionary else {
                 print("Not a Dictionary")
                 // put in function
@@ -30,7 +30,7 @@ extension NSData {
     
     //  Convert NSData to String
     public var toJsonString : NSString! {
-        return NSString(data: self, encoding: NSUTF8StringEncoding) as String?
+        return NSString(data: self as Data, encoding: String.Encoding.utf8.rawValue)
     }
 }
 
@@ -38,7 +38,7 @@ extension NSMutableData {
     
     //  Append String data to NSData
     public func appendString(string: String) {
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-        appendData(data!)
+        let data = string.data(using: String.Encoding.utf8, allowLossyConversion: true)
+        append(data!)
     }
 }
