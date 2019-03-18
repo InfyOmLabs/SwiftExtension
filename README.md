@@ -8,7 +8,7 @@
 Simple Swift extensions for classes which are mostly used in iOS apps.
 
 ## Requirements
-Required Swift 2.0 or later
+Required Swift 4.0 or later
 
 ## Installation
 
@@ -96,8 +96,8 @@ data.appendString("String") // Convert String to NSdata then append to NSMutable
 
 ## NSDate Extension
 ``` swift
-let date = NSDate()
-let afterDate = NSDate(timeIntervalSinceNow: 253333)
+let date = Date()
+let afterDate = Date(timeIntervalSinceNow: 253333)
 print(date.weekDay) // 2 : Get Week day from date
 print(date.weekOfMonth)// : Get Week index of month from date
 print(date.weekDayName) // Monday : Get Week day name from date
