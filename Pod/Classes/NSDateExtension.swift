@@ -138,6 +138,13 @@ extension Date {
         return formatter.string(from: self)
     }
     
+    //  Get Time standard (i.e 2016-03-12 12:12:12) format
+    public func getFormatDateAndTime() -> String {
+        let dateFormate = DateFormatter()
+        dateFormate.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormate.string(from: self)
+    }
+    
     //  Check date is after date
     public func afterDate(date : Date) -> Bool {
         return self.compare(date) == ComparisonResult.orderedAscending
